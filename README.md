@@ -122,12 +122,13 @@ Include C code such that:
     - The TAIDEX field in the TAxEX0 register has a value of 000b (divide by 1)
     - Up mode is selected
 
-To select SMCLK as the clock source for Timer_A, bit 9-8 of CTL register needs to be 10. To select up mode, it requires setting bit 5-4 to 01.
+To select SMCLK as the clock source for Timer_A, bit 9-8 of CTL register needs to be 10. For a prescaler value of 1, bit 7-6 of CTL needs to be 00. To select up mode, it requires setting bit 5-4 to 01. To get the value of CCR0, multiply the time frequency and period. SMLCK is a 12 MHz clock, and it is divided by 1. The timer frequency is 12 MHz. The period is 2 ms or 0.002 seconds. CCR0 = 12000000 x 0.002 = 24000 counts.
+
 ```
 TIMER_A0->CTL &= ~0x0030;
 TIMER_A0->CTL |= 0x0200;
 TIMER_A0->CCTL[0] |= 0x0010;
-TIMER_A0->CCR[0] = (period - 1);
+TIMER_A0->CCR[0] = (24000 - 1);
 TIMER_A0->EX0 = 0x0000;
 NVIC->IP[2] = (NVIC->IP[2] & 0xFFFFF00F) | 0x00000060;
 NVIC->ISER[0] |= 0x00000100;
